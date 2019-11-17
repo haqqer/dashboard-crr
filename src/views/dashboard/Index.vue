@@ -85,30 +85,36 @@ export default {
     // 'post-chart' : ChartPost
   },
   async created() {
-    const getCountProjectDone = await this.getCountProject({ status: 'done' })
-    this.project.done = getCountProjectDone.data.result.count
-    const getCountProjectUndone = await this.getCountProject({ status: 'undone' })
-    this.project.undone = getCountProjectUndone.data.result.count
-    const getCountProjectTotal = await this.getCountProject()
-    this.project.total = getCountProjectTotal.data.result.count
     this.$nextTick(() => {
       this.getPostType()
       this.getPostStatus()
-    })    
+    })      
+    // const getCountProjectDone = await this.getCountProject({ status: 'done' })
+    // this.project.done = getCountProjectDone.data.result.count
+    // const getCountProjectUndone = await this.getCountProject({ status: 'undone' })
+    // this.project.undone = getCountProjectUndone.data.result.count
+    // const getCountProjectTotal = await this.getCountProject()
+    // this.project.total = getCountProjectTotal.data.result.count
+    // this.$nextTick(() => {
+    //   this.getPostType()
+    //   this.getPostStatus()
+    // })
   },
   methods: {
     async getCountProject(params) {
+      const token = localStorage.getItem('token')
       return await axios.get('https://dch.doscom.org/api/projects/count', {
         headers : {
-            'Authorization': `Bearer ${this.$store.state.token}`          
+            'Authorization': `Bearer ${token}`          
         },
         params: params ? params : ""
       })
     },
     async getCountPost(params) {
+      const token = localStorage.getItem('token')
       return await axios.get('https://dch.doscom.org/api/posts/count', {
         headers: {
-          'Authorization': `Bearer ${this.$store.state.token}`
+          'Authorization': `Bearer ${token}`
         },
         params: params ? params : ""
       })
@@ -136,5 +142,13 @@ export default {
       })
     }
   },
+  async mounted() {
+    const getCountProjectDone = await this.getCountProject({ status: 'done' })
+    this.project.done = getCountProjectDone.data.result.count
+    const getCountProjectUndone = await this.getCountProject({ status: 'undone' })
+    this.project.undone = getCountProjectUndone.data.result.count
+    const getCountProjectTotal = await this.getCountProject()
+    this.project.total = getCountProjectTotal.data.result.count  
+  }
 };
 </script>
